@@ -14,11 +14,7 @@ class Login extends Component {
       isDisable: true,
     };
   }
-  componentDidMount(){
-    this.props.myFirstDispatch()
-
-  }
-
+  
   validityForm = () => {
     const { name, email } = this.state;
     if (name !== '' && email !== '') {
@@ -33,9 +29,9 @@ class Login extends Component {
   };
 
   clickenviastore = async () => {
-    const { myFirstDispatch } = this.props;
-    console.log("este")
-    myFirstDispatch() 
+    const { myFirstDispatch, history } = this.props;
+    myFirstDispatch()
+    history.push('/jogo'); 
 
     
   };
@@ -69,7 +65,7 @@ class Login extends Component {
               disabled={ isDisable }
               data-testid="btn-play"
             >
-              Play
+              Jogar
             </button>
           </label>
         </form>
