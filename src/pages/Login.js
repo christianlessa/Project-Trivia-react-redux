@@ -50,7 +50,7 @@ class Login extends Component {
               onChange={ this.handleChange }
             />
             <button
-              // onClick={ () => this.clickenviastore({ name, email }) }
+              // onClick={ () => this.clickenviastore({ name, email }) };
               type="button"
               disabled={ isDisable }
               data-testid="btn-play"
