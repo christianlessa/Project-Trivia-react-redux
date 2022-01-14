@@ -1,8 +1,4 @@
-const REQUEST_TOKENS = 'REQUEST_TOKENS';
 const RECEIVE_TOKENS = 'RECEIVE_TOKENS';
-
-const requestMovies = () => ({
-    type: REQUEST_TOKENS});
 
 const receiveMovies = (token) => ({
     type: RECEIVE_TOKENS,
@@ -11,7 +7,7 @@ const receiveMovies = (token) => ({
 
 export function fetchMovies() {
     return (dispatch) => { // thunk declarado
-      dispatch(requestMovies());
+      //dispatch(requestMovies());
       return fetch('https://opentdb.com/api_token.php?command=request')
         .then((response) => response.json())
         .then((token) => dispatch(receiveMovies(token)));
