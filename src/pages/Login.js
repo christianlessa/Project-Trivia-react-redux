@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { fetchMovies } from '../actions'
+import { fetchMovies } from '../actions';
 // import { newAction } from '../actions';
 
 class Login extends Component {
@@ -14,7 +14,7 @@ class Login extends Component {
       isDisable: true,
     };
   }
-  
+
   validityForm = () => {
     const { name, email } = this.state;
     if (name !== '' && email !== '') {
@@ -30,10 +30,8 @@ class Login extends Component {
 
   clickenviastore = async () => {
     const { myFirstDispatch, history } = this.props;
-    myFirstDispatch()
-    history.push('/jogo'); 
-
-    
+    myFirstDispatch();
+    history.push('/jogo');
   };
 
   render() {
@@ -76,7 +74,7 @@ class Login extends Component {
 
 Login.propTypes = {
   myFirstDispatch: PropTypes.func.isRequired,
-  //history: PropTypes.arrayOf(PropTypes.object).isRequired,
+  history: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 const mapDispatchToProps = (dispatch) => ({

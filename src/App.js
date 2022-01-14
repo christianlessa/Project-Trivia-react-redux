@@ -9,7 +9,7 @@ export default function App() {
   return (
     <div className="App">
       <Switch>
-      <Route exact path="/" render={ (props) => <Login { ...props } /> } />
+        <Route exact path="/" render={ (props) => <Login { ...props } /> } />
         <Route path="/jogo" component={ Jogo } />
       </Switch>
     </div>
