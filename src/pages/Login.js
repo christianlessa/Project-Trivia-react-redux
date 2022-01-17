@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import md5 from 'crypto-js/md5';
-import { fetchMovies, playerLogin } from '../actions';
+import { fetchToken, playerLogin } from '../actions';
 
 class Login extends Component {
   constructor() {
@@ -34,7 +34,7 @@ class Login extends Component {
     const gravatarHash = md5(email).toString();
     const avatar = (`https://www.gravatar.com/avatar/${gravatarHash}`);
     dispatchPlayerDatas(name, avatar);
-    myFirstDispatch();
+    await myFirstDispatch();
     history.push('/jogo');
   };
 
@@ -93,7 +93,7 @@ Login.propTypes = {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  myFirstDispatch: () => dispatch(fetchMovies()),
+  myFirstDispatch: () => dispatch(fetchToken()),
   dispatchPlayerDatas: (name, hash) => dispatch(playerLogin(name, hash)),
 });
 
