@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { fetchMovies } from '../actions';
-// import { newAction } from '../actions';
+import md5 from 'crypto-js/md5';
+import { fetchMovies, playerLogin } from '../actions';
+
 class Login extends Component {
   constructor() {
     super();
@@ -27,8 +28,12 @@ class Login extends Component {
     this.setState({ [name]: value }, () => this.validityForm());
   };
 
-  clickenviastore = async () => {
-    const { myFirstDispatch, history } = this.props;
+  handleClick = async () => {
+    const { myFirstDispatch, history, dispatchPlayerDatas } = this.props;
+    const { name, email } = this.state;
+    const gravatarHash = md5(email).toString();
+    const avatar = (`https://www.gravatar.com/avatar/${gravatarHash}`);
+    dispatchPlayerDatas(name, avatar);
     myFirstDispatch();
     history.push('/jogo');
   };
@@ -58,8 +63,7 @@ class Login extends Component {
               onChange={ this.handleChange }
             />
             <button
-              // onClick={ () => this.clickenviastore({ name, email }) };
-              onClick={ () => this.clickenviastore() }
+              onClick={ this.handleClick }
               type="button"
               disabled={ isDisable }
               data-testid="btn-play"
@@ -83,15 +87,14 @@ class Login extends Component {
 }
 
 Login.propTypes = {
-  myFirstDispatch: PropTypes.arrayOf(PropTypes.object).isRequired,
-  history: PropTypes.shape({
-    push: PropTypes.func.isRequired,
-  }).isRequired,
+  history: PropTypes.objectOf(PropTypes.object).isRequired,
+  myFirstDispatch: PropTypes.func.isRequired,
+  dispatchPlayerDatas: PropTypes.func.isRequired,
 };
 
 const mapDispatchToProps = (dispatch) => ({
   myFirstDispatch: () => dispatch(fetchMovies()),
-  // history: PropTypes.arrayOf(PropTypes.object).isRequired,
+  dispatchPlayerDatas: (name, hash) => dispatch(playerLogin(name, hash)),
 });
 
 export default connect(null, mapDispatchToProps)(Login);

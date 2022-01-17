@@ -10,3 +10,7 @@ export function fetchMovies() {
     .then((response) => response.json())
     .then((token) => dispatch(receiveMovies(token)));
 }
+
+export const PLAYER_LOGIN = 'PLAYER_LOGIN';
+
+export const playerLogin = (name, hash) => ({ type: PLAYER_LOGIN, name, hash });
