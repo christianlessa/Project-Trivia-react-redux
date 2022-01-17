@@ -83,18 +83,15 @@ class Login extends Component {
 }
 
 Login.propTypes = {
+  myFirstDispatch: PropTypes.arrayOf(PropTypes.object).isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
 };
 
-export default Login;
-  myFirstDispatch: PropTypes.func.isRequired,
-  history: PropTypes.arrayOf(PropTypes.object).isRequired,
-};
-
 const mapDispatchToProps = (dispatch) => ({
   myFirstDispatch: () => dispatch(fetchMovies()),
+  // history: PropTypes.arrayOf(PropTypes.object).isRequired,
 });
 
 export default connect(null, mapDispatchToProps)(Login);
