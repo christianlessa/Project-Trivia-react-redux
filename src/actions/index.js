@@ -1,6 +1,6 @@
 const RECEIVE_TOKENS = 'RECEIVE_TOKENS';
 
-const receiveMovies = (token) => ({
+export const receiveMovies = (token) => ({
   type: RECEIVE_TOKENS,
   token,
 });
