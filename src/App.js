@@ -5,6 +5,7 @@ import config from './pages/config';
 import Jogo from './pages/Jogo';
 // import logo from './trivia.png';
 import './App.css';
+import './index.css';
 
 export default function App() {
   return (
