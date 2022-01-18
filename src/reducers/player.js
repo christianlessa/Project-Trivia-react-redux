@@ -15,6 +15,11 @@ const player = (state = INITIAL_STATE, action) => {
       name: action.name,
       gravatarEmail: action.hash,
     });
+  case 'PLAYER_SOMAR':
+    return ({
+      ...state,
+      score: action.score,
+    });
   default:
     return state;
   }

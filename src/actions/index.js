@@ -27,3 +27,5 @@ export const fetchAnswers = () => (dispatch) => {
 export const PLAYER_LOGIN = 'PLAYER_LOGIN';
 
 export const playerLogin = (name, hash) => ({ type: PLAYER_LOGIN, name, hash });
+
+export const somar = (score) => ({ type: 'PLAYER_SOMAR', score });
