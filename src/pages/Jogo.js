@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Header from '../components/Header';
-import { fetchAnswers, fetchToken } from '../actions';
+import { fetchAnswers, fetchToken, somar } from '../actions';
 import randomizeArray from '../helpers/randomizeArray';
 
 class Jogo extends Component {
@@ -14,6 +14,7 @@ class Jogo extends Component {
       question: '',
       incorrectAnswers: [],
       correctAnswer: '',
+      time: 30,
     };
   }
 
@@ -28,6 +29,12 @@ class Jogo extends Component {
       await dispatchAnswers();
     }
     this.randomizeAnswers();
+
+    // dados macados
+    // const time = 17;
+    // const dificudade = 'medium';
+    // função atualiza o stado ´player.score e o localstore.soma
+    // this.functionSomaPlacar(time, dificudade);
   }
 
   randomizeAnswers = () => {
@@ -43,6 +50,20 @@ class Jogo extends Component {
       correctAnswer: answers.results[0].correct_answer,
     });
   }
+
+  functionSomaPlacar = (timer, grau) => {
+    const { dispatchSoma } = this.props;
+    const dez = 10;
+    const dificuldade = { hard: 3, medium: 2, easy: 1 };
+    const soma = (timer * dificuldade[grau]) + dez;
+    localStorage.setItem('soma', soma);
+    dispatchSoma(soma);
+  }
+
+  handleChange = (value) => {
+    const { time, correctAnswer } = this.state;
+    if (value === correctAnswer) { this.functionSomaPlacar(time, 'medium'); }
+  };
 
   render() {
     const {
@@ -63,6 +84,8 @@ class Jogo extends Component {
             {
               randomizedAnswers.map((answer) => (
                 <button
+                  name="resposta"
+                  onClick={ () => this.handleChange(answer) }
                   key={ answer }
                   type="button"
                   data-testid={ answer === correctAnswer ? 'correct-answer'
@@ -82,6 +105,7 @@ class Jogo extends Component {
 const mapDispatchToProps = (dispatch) => ({
   dispatchAnswers: () => dispatch(fetchAnswers()),
   dispatchToken: () => dispatch(fetchToken()),
+  dispatchSoma: (score) => dispatch(somar(score)),
 });
 
 const mapStateToProps = (state) => ({
@@ -90,6 +114,7 @@ const mapStateToProps = (state) => ({
 
 Jogo.propTypes = {
   dispatchAnswers: PropTypes.func.isRequired,
+  dispatchSoma: PropTypes.func.isRequired,
   dispatchToken: PropTypes.func.isRequired,
   answers: PropTypes.shape({
     response_code: PropTypes.number.isRequired,
