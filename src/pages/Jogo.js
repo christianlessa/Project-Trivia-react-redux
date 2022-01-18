@@ -30,7 +30,7 @@ class Jogo extends Component {
     }
     this.randomizeAnswers();
 
-    // dados macados
+    // dados macadoss
     // const time = 17;
     // const dificudade = 'medium';
     // função atualiza o stado ´player.score e o localstore.soma
