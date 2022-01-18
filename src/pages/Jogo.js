@@ -54,20 +54,19 @@ class Jogo extends Component {
   }
 
  functionSomaPlacar = (timer, grau) => {
-    const { dispatchSoma } = this.props;
-    const dez = 10;
-    const dificuldade = { hard: 3, medium: 2, easy: 1 };
-    const soma = (timer * dificuldade[grau]) + dez;
-    localStorage.setItem('soma', soma);
-    dispatchSoma(soma);
-  }
+   const { dispatchSoma } = this.props;
+   const dez = 10;
+   const dificuldade = { hard: 3, medium: 2, easy: 1 };
+   const soma = (timer * dificuldade[grau]) + dez;
+   localStorage.setItem('soma', soma);
+   dispatchSoma(soma);
+ }
 
   handleChange = (value) => {
     const { time, correctAnswer } = this.state;
     if (value === correctAnswer) { this.functionSomaPlacar(time, 'medium'); }
   };
 
-=======
   colorAnswers() {
     this.setState({
       classNameCorrect: 'green',
@@ -97,14 +96,14 @@ class Jogo extends Component {
               randomizedAnswers.map((answer) => (
                 <button
                   name="resposta"
-                  onClick={ () => this.handleChange(answer) }
+                  onClick={ () => { this.handleChange(answer); this.colorAnswers(); } }
                   key={ answer }
                   type="button"
                   className={ answer === correctAnswer
                     ? classNameCorrect : classNameIncorrect }
                   data-testid={ answer === correctAnswer ? 'correct-answer'
                     : `wrong-answer-${incorrectAnswers.indexOf(answer)}` }
-                  onClick={ this.colorAnswers }
+                  // onClick={  }
                 >
                   { answer }
                 </button>
