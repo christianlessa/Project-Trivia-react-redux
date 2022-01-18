@@ -13,8 +13,11 @@ class Jogo extends Component {
       category: '',
       question: '',
       incorrectAnswers: [],
-      correctAnswer: '',
+      correctAnswer: 'abc',
+      classNameCorrect: '',
+      classNameIncorrect: '',
     };
+    this.colorAnswers = this.colorAnswers.bind(this);
   }
 
   async componentDidMount() {
@@ -22,7 +25,6 @@ class Jogo extends Component {
     await dispatchAnswers();
     const { answers, dispatchToken } = this.props;
     const expiredResponseCode = 3;
-    console.log(answers.response_code);
     if (answers.response_code === expiredResponseCode) {
       await dispatchToken();
       await dispatchAnswers();
@@ -44,6 +46,13 @@ class Jogo extends Component {
     });
   }
 
+  colorAnswers() {
+    this.setState({
+      classNameCorrect: 'green',
+      classNameIncorrect: 'red',
+    });
+  }
+
   render() {
     const {
       randomizedAnswers,
@@ -51,13 +60,15 @@ class Jogo extends Component {
       question,
       incorrectAnswers,
       correctAnswer,
+      classNameCorrect,
+      classNameIncorrect,
     } = this.state;
     return (
       <div>
         <Header />
         <main>
           <h1>Game Page</h1>
-          <h3 data-testid="question-category">{category}</h3>
+          <h3 data-testid="question-category" className="test">{category}</h3>
           <h2 data-testid="question-text">{question}</h2>
           <section data-testid="answer-options">
             {
@@ -65,8 +76,11 @@ class Jogo extends Component {
                 <button
                   key={ answer }
                   type="button"
+                  className={ answer === correctAnswer
+                    ? classNameCorrect : classNameIncorrect }
                   data-testid={ answer === correctAnswer ? 'correct-answer'
                     : `wrong-answer-${incorrectAnswers.indexOf(answer)}` }
+                  onClick={ this.colorAnswers }
                 >
                   { answer }
                 </button>
