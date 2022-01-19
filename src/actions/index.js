@@ -1,5 +1,6 @@
 const RECEIVE_TOKENS = 'RECEIVE_TOKENS';
 export const GET_ANSWERS = 'GET_ANSWERS';
+export const GET_ASSERTIONS = 'GET_ASSERTIONS';
 
 export const receiveMovies = (token) => ({
   type: RECEIVE_TOKENS,
@@ -29,3 +30,8 @@ export const PLAYER_LOGIN = 'PLAYER_LOGIN';
 export const playerLogin = (name, hash) => ({ type: PLAYER_LOGIN, name, hash });
 
 export const somar = (score) => ({ type: 'PLAYER_SOMAR', score });
+
+export const getAssertions = (assertions) => ({
+  type: GET_ASSERTIONS,
+  payload: assertions,
+});

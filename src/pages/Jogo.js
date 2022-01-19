@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Header from '../components/Header';
-import { fetchAnswers, fetchToken, somar } from '../actions';
+import { fetchAnswers, fetchToken, somar, getAssertions } from '../actions';
 import randomizeArray from '../helpers/randomizeArray';
 
 class Jogo extends Component {
@@ -20,6 +20,7 @@ class Jogo extends Component {
       isDisabled: false,
       proximo: false,
       numberQuestion: 0,
+      assertions: 0,
     };
     this.colorAnswers = this.colorAnswers.bind(this);
   }
@@ -64,7 +65,6 @@ class Jogo extends Component {
 
   randomizeAnswers = (numberQuestion) => {
     const { answers } = this.props;
-    console.log(answers.results);
     const array = [...answers.results[numberQuestion].incorrect_answers,
       answers.results[numberQuestion].correct_answer];
     randomizeArray(array);
@@ -82,22 +82,28 @@ class Jogo extends Component {
     const dez = 10;
     const dificuldade = { hard: 3, medium: 2, easy: 1 };
     const soma = (timer * dificuldade[grau]) + dez;
-    localStorage.setItem('soma', soma);
+    // localStorage.setItem('soma', soma); retirei daqui pois devemos passar o placar final para o localstorage, dessa forma estava passando somente a pontuação de cada pergunta.
     dispatchSoma(soma);
   }
 
   handleChange = (value) => {
     const { time, correctAnswer } = this.state;
-    if (value === correctAnswer) { this.functionSomaPlacar(time, 'medium'); }
+    if (value === correctAnswer) {
+      this.functionSomaPlacar(time, 'medium');
+      this.setState((prevState) => ({ assertions: prevState.assertions + 1 }));
+    }
     this.setState({ isDisabled: true });
   };
 
   refreshPage = () => {
-    const { numberQuestion } = this.state;
-    const { tudo, history } = this.props;
+    const { numberQuestion, assertions } = this.state;
+    const { tudo, history, dispatchAssertions } = this.props;
     localStorage.setItem('tudo', tudo);
     const cinco = 5;
-    if (numberQuestion + 1 === cinco) { history.push('./feedback'); } else {
+    if (numberQuestion + 1 === cinco) {
+      dispatchAssertions(assertions);
+      history.push('./feedback');
+    } else {
       this.colorDefault();
     }
   }
@@ -105,9 +111,7 @@ class Jogo extends Component {
   colorDefault = () => {
     const { numberQuestion } = this.state;
     this.setState({ numberQuestion: numberQuestion + 1, time: 30 });
-    this.handleExpireTime();
     this.randomizeAnswers(numberQuestion + 1);
-    this.setTimer();
     this.setState({
       classNameCorrect: '',
       classNameIncorrect: '',
@@ -189,6 +193,7 @@ const mapDispatchToProps = (dispatch) => ({
   dispatchAnswers: () => dispatch(fetchAnswers()),
   dispatchToken: () => dispatch(fetchToken()),
   dispatchSoma: (score) => dispatch(somar(score)),
+  dispatchAssertions: (assertions) => dispatch(getAssertions(assertions)),
 });
 
 const mapStateToProps = (state) => ({
@@ -206,6 +211,7 @@ Jogo.propTypes = {
     results: PropTypes.arrayOf(Object),
   }).isRequired,
   history: PropTypes.arrayOf(PropTypes.object).isRequired,
+  dispatchAssertions: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Jogo);
