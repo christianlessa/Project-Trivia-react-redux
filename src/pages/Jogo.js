@@ -98,15 +98,16 @@ class Jogo extends Component {
     localStorage.setItem('tudo', tudo);
     const cinco = 5;
     if (numberQuestion + 1 === cinco) { history.push('./feedback'); } else {
-      this.setState({ numberQuestion: numberQuestion + 1, time: 30 });
-      this.handleExpireTime();
-      this.randomizeAnswers(numberQuestion + 1);
-      this.setTimer();
       this.colorDefault();
     }
   }
 
   colorDefault = () => {
+    const { numberQuestion } = this.state;
+    this.setState({ numberQuestion: numberQuestion + 1, time: 30 });
+    this.handleExpireTime();
+    this.randomizeAnswers(numberQuestion + 1);
+    this.setTimer();
     this.setState({
       classNameCorrect: '',
       classNameIncorrect: '',
