@@ -18,11 +18,14 @@ class Jogo extends Component {
       classNameCorrect: '',
       classNameIncorrect: '',
       isDisabled: false,
+      proximo: false,
+      numberQuestion: 0,
     };
     this.colorAnswers = this.colorAnswers.bind(this);
   }
 
   async componentDidMount() {
+    const { numberQuestion } = this.state;
     const { dispatchAnswers } = this.props;
     await dispatchAnswers();
     const { answers, dispatchToken } = this.props;
@@ -31,7 +34,7 @@ class Jogo extends Component {
       await dispatchToken();
       await dispatchAnswers();
     }
-    this.randomizeAnswers();
+    this.randomizeAnswers(numberQuestion);
     this.setTimer();
 
     // dados macadoss
@@ -59,28 +62,29 @@ class Jogo extends Component {
     }, interval);
   }
 
-  randomizeAnswers = () => {
+  randomizeAnswers = (numberQuestion) => {
     const { answers } = this.props;
-    const array = [...answers.results[0].incorrect_answers,
-      answers.results[0].correct_answer];
+    console.log(answers.results);
+    const array = [...answers.results[numberQuestion].incorrect_answers,
+      answers.results[numberQuestion].correct_answer];
     randomizeArray(array);
     this.setState({
       randomizedAnswers: array,
-      category: answers.results[0].category,
-      question: answers.results[0].question,
-      incorrectAnswers: answers.results[0].incorrect_answers,
-      correctAnswer: answers.results[0].correct_answer,
+      category: answers.results[numberQuestion].category,
+      question: answers.results[numberQuestion].question,
+      incorrectAnswers: answers.results[numberQuestion].incorrect_answers,
+      correctAnswer: answers.results[numberQuestion].correct_answer,
     });
   }
 
- functionSomaPlacar = (timer, grau) => {
-   const { dispatchSoma } = this.props;
-   const dez = 10;
-   const dificuldade = { hard: 3, medium: 2, easy: 1 };
-   const soma = (timer * dificuldade[grau]) + dez;
-   localStorage.setItem('soma', soma);
-   dispatchSoma(soma);
- }
+  functionSomaPlacar = (timer, grau) => {
+    const { dispatchSoma } = this.props;
+    const dez = 10;
+    const dificuldade = { hard: 3, medium: 2, easy: 1 };
+    const soma = (timer * dificuldade[grau]) + dez;
+    localStorage.setItem('soma', soma);
+    dispatchSoma(soma);
+  }
 
   handleChange = (value) => {
     const { time, correctAnswer } = this.state;
@@ -88,11 +92,36 @@ class Jogo extends Component {
     this.setState({ isDisabled: true });
   };
 
+  refreshPage = () => {
+    const { numberQuestion } = this.state;
+    const { tudo, history } = this.props;
+    localStorage.setItem('tudo', tudo);
+    const cinco = 5;
+    if (numberQuestion + 1 === cinco) { history.push('./feedback'); } else {
+      this.colorDefault();
+    }
+  }
+
+  colorDefault = () => {
+    const { numberQuestion } = this.state;
+    this.setState({ numberQuestion: numberQuestion + 1, time: 30 });
+    this.handleExpireTime();
+    this.randomizeAnswers(numberQuestion + 1);
+    this.setTimer();
+    this.setState({
+      classNameCorrect: '',
+      classNameIncorrect: '',
+      proximo: true,
+      isDisabled: false,
+    });
+  }
+
   colorAnswers() {
     this.setState({
       classNameCorrect: 'green',
       classNameIncorrect: 'red',
     });
+    this.setState({ proximo: true });
   }
 
   render() {
@@ -106,13 +135,14 @@ class Jogo extends Component {
       classNameIncorrect,
       time,
       isDisabled,
+      proximo,
     } = this.state;
     return (
       <div>
         <Header />
         <main>
           <h1>Game Page</h1>
-          <h3>{ time }</h3>
+          <h3>{time}</h3>
           <h3 data-testid="question-category" className="test">{category}</h3>
           <h2 data-testid="question-text">{question}</h2>
           <section data-testid="answer-options">
@@ -128,13 +158,27 @@ class Jogo extends Component {
                     ? classNameCorrect : classNameIncorrect }
                   data-testid={ answer === correctAnswer ? 'correct-answer'
                     : `wrong-answer-${incorrectAnswers.indexOf(answer)}` }
-                  // onClick={  }
                 >
-                  { answer }
+                  {answer}
                 </button>
               ))
             }
           </section>
+          {
+            proximo
+            && (
+              <button
+                onClick={ () => this.refreshPage() }
+                type="button"
+                aria-label="Proxima"
+                data-testid="btn-next"
+              >
+                Proximo
+                {' '}
+
+              </button>
+            )
+          }
         </main>
       </div>
     );
@@ -149,9 +193,11 @@ const mapDispatchToProps = (dispatch) => ({
 
 const mapStateToProps = (state) => ({
   answers: state.answers,
+  tudo: state,
 });
 
 Jogo.propTypes = {
+  tudo: PropTypes.objectOf.isRequired,
   dispatchAnswers: PropTypes.func.isRequired,
   dispatchSoma: PropTypes.func.isRequired,
   dispatchToken: PropTypes.func.isRequired,
@@ -159,6 +205,7 @@ Jogo.propTypes = {
     response_code: PropTypes.number.isRequired,
     results: PropTypes.arrayOf(Object),
   }).isRequired,
+  history: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Jogo);
