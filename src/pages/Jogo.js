@@ -141,6 +141,7 @@ class Jogo extends Component {
       isDisabled,
       proximo,
     } = this.state;
+    console.log(correctAnswer);
     return (
       <div>
         <Header />
